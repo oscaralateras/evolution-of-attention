@@ -1,0 +1,106 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+.conda/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# ---- CUDA / native build artefacts ----
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.dylib
+*.exe
+*.out
+*.cubin
+*.fatbin
+*.ptx
+*.sass
+*.i
+*.ii
+*.gpu
+*.cudafe*
+*.module_id
+*.link.stub
+*.compute_*
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile.local
+compile_commands.json
+
+# PyTorch / Triton extension build dirs
+.torch_extensions/
+.triton/
+
+# ---- Profiler outputs (regenerate, don't commit) ----
+*.nsys-rep
+*.qdrep
+*.qdstrm
+*.sqlite
+*.ncu-rep
+*.nvvp
+*.nvprof
+prof/
+profiling/**/raw/
+*.trace.json
+
+# Keep committed profiling *analysis*, ignore bulk captures:
+# summarised .md / .csv results in profiling/ are intentionally tracked.
+
+# ---- Large / generated data ----
+*.npy
+*.npz
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.h5
+*.parquet
+data/
+checkpoints/
+logs/
+wandb/
+
+# ---- IDE / editor ----
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
