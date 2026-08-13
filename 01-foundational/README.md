@@ -19,9 +19,9 @@ This single paper covers the whole foundational vocabulary of the series:
 - **Causal / masked attention** — enforcing autoregressive structure
 
 For each of these the stage follows the standard six-step process: derive the maths,
-write NumPy then PyTorch references, implement progressive CUDA kernels, profile on
-real NVIDIA hardware, analyse KV-cache and memory-traffic costs, and verify correctness
-across all three implementations.
+write NumPy then PyTorch references, verify those references agree numerically,
+implement progressive CUDA kernels checked against them, profile on real NVIDIA
+hardware, and analyse KV-cache and memory-traffic costs.
 
 Out of scope for Stage 1: any KV-cache compression scheme (MQA/GQA/MLA), IO-aware
 exact attention (FlashAttention), and anything sub-quadratic. Those are Stages 02–07.
@@ -34,7 +34,7 @@ exact attention (FlashAttention), and anything sub-quadratic. Those are Stages 0
 | `numpy/` | Pure NumPy reference implementations. Executable mathematics; follows the paper equations directly, no performance tricks. |
 | `pytorch/` | Clean, idiomatic PyTorch reference. The main correctness baseline before CUDA. |
 | `cuda/` | CUDA kernels written from first principles, in progressive versions (`v1`, `v2`, …), each commented back to the maths and the hardware decision it encodes. |
-| `profiling/` | Benchmark scripts and measured results: achieved bandwidth, occupancy, arithmetic intensity, cross-implementation comparisons, hardware implications. |
+| `profiling/` | Benchmark scripts and measured results: achieved bandwidth, occupancy, arithmetic intensity, cross-implementation comparisons, hardware implications. Every result records the exact GPU, driver, CUDA toolkit, and PyTorch version it was measured on — numbers are not comparable without it. |
 | `notes/` | Working notes — failed attempts, open questions, sketches, paper quotes. Deliberately unpolished. |
 
 Polished long-form write-ups for this stage live in the top-level `docs/` folder, not here.
