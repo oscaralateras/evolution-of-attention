@@ -26,7 +26,8 @@ For each major stage, the process is always the same:
 1. **Understand the math** and explain it simply
 2. **Write clean NumPy + PyTorch reference implementations**
 3. **Verify the references agree** numerically — NumPy ↔ PyTorch
-4. **Implement CUDA kernels** from first principles, each verified against those references
+4. **Implement GPU kernels** from first principles — CUDA for thread-level control,
+   Triton for the block-level view — each verified against those references
 5. **Profile on real NVIDIA hardware**
 6. **Analyse KV-cache costs**, memory traffic, arithmetic intensity, and hardware implications
 
@@ -59,14 +60,18 @@ evolution-of-attention/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
-├── docs/                     # polished long-form technical write-ups
+├── docs/                     # per-stage summaries and the index
+├── model/                    # shared decoder wrapper every variant plugs into
 ├── scripts/                  # shared utilities, helpers, profiling scripts
 └── 01-foundational/
     ├── README.md
+    ├── verify.py             # cross-checks every backend against the reference
     ├── math/                 # written explanations & derivations
     ├── numpy/                # pure NumPy reference (executable maths)
     ├── pytorch/              # clean PyTorch reference
-    ├── cuda/                 # CUDA kernels (progressive versions)
+    ├── kernels/
+    │   ├── cuda/             # CUDA kernels (progressive versions)
+    │   └── triton/           # Triton kernels (block-level counterpart)
     ├── profiling/            # measurements, benchmark results, analysis
     └── notes/                # working / process notes
 ```
@@ -93,11 +98,15 @@ the whole of Stage 1.
 - A pure NumPy reference implementation covering single-head, multi-head, self-, cross-,
   and causal attention
 - A clean PyTorch reference implementation used as the correctness baseline
-- Numerical verification across NumPy ↔ PyTorch ↔ CUDA
+- Numerical verification across every backend against a single fp64 reference
 - Progressive CUDA kernels (naïve → tiled → optimised), each with its hardware rationale
+- Triton kernels for the same computation, to contrast thread-level control with
+  block-level abstraction — including a comparison against the Triton that
+  `torch.compile` generates for the eager reference
 - Profiling results on real NVIDIA hardware: achieved bandwidth, arithmetic intensity, occupancy
 - A KV-cache and memory-traffic analysis for the baseline MHA formulation
-- A published long-form write-up in `docs/`
+- A stage summary in `docs/`, with the long technical write-up published as part of the
+  accompanying blog series
 
 ---
 

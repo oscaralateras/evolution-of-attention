@@ -5,7 +5,5 @@ description = "Deep dive through the practical lineages of attention in modern L
 requires-python = ">=3.10"
 dependencies = [
     "numpy>=2.0",
+    "torch>=2.4",
 ]
-
-# PyTorch arrives with the pytorch/ reference and the shared decoder wrapper.
-# Left out for now to keep the environment small while the work is NumPy-only.

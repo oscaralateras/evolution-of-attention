@@ -113,12 +113,21 @@ class SingleHeadAttention:
     Holds no parameters. Q, K and V arrive already projected, because the
     W_q/W_k/W_v projections belong to multi-head attention.
 
-    It is a class for interface consistency: every variant in this series
-    exposes the same `forward`, so the transformer wrapper can swap MHA for
-    GQA for MLA without knowing which it holds. From stage 2 the interface
-    grows a `decode_step`, and the state threaded through it is what the
-    variants actually differ in — a KV cache here, a compressed latent for
-    MLA, a fixed-size recurrent matrix for DeltaNet.
+    It is a class for interface consistency: everything in this series exposes
+    the same `forward`, so the transformer wrapper can hold any of them
+    without knowing which. Two independent things get swapped through that
+    slot, and they are worth keeping apart.
+
+    Architecture — MHA, MQA, GQA, MLA, linear. Mutually exclusive; a model
+    picks one. These compute different functions and differ in what state
+    they carry, which from stage 2 is threaded through a `decode_step`
+    alongside `forward`: a KV cache here, a compressed latent for MLA, a
+    fixed-size recurrent matrix for DeltaNet.
+
+    Implementation — naive, tiled, FlashAttention. Same architecture, same
+    outputs, different memory schedule. So FlashAttention does not compete
+    with GQA; production systems run both at once. Comparisons only mean
+    something along one axis at a time.
     """
 
     def forward(
@@ -210,9 +219,9 @@ if __name__ == "__main__":
     rng = np.random.default_rng(0)
     attn = SingleHeadAttention()
 
-    # Cross-attention shapes: L_q != L_k, d_v != d_k. Nothing in the maths
-    # requires them to match, and using distinct values catches transposes
-    # that square inputs would hide.
+    # Every dimension distinct. Square inputs let a transposed matmul produce
+    # a valid shape and pass unnoticed. L_q != L_k is not an exotic case: it
+    # is what decode looks like, one query row against the whole cache.
     L_q, L_k, d_k, d_v = 4, 6, 8, 5
     Q = rng.standard_normal((L_q, d_k))
     K = rng.standard_normal((L_k, d_k))
