@@ -1,0 +1,11 @@
+[project]
+name = "evolution-of-attention"
+version = "0.1.0"
+description = "Deep dive through the practical lineages of attention in modern LLMs"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=2.0",
+]
+
+# PyTorch arrives with the pytorch/ reference and the shared decoder wrapper.
+# Left out for now to keep the environment small while the work is NumPy-only.
